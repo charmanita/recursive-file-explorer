@@ -43,7 +43,68 @@ int main(int argc, char *argv[])
     do
     {
         printBar(50);
-        centerText("RECURSIVE FILE EXPLORER - Hunter Roberson (Charmanita)");
+        centerText("RECURSIVE FILE EXPLORER - Hunter Roberson (Charmanita)", 50);
         printBar(50);
-    }
+
+        displayMenu(); // Displays menu using utilities.
+
+        // Receive user input with input validation from utilities.
+        choice = getIntegerInput("Please choose a menu option:\n");
+
+        // Menu choices
+        switch (choice)
+        {
+        case 1:
+            // Prints file tree
+            printTree(root, 0);
+            break;
+
+        case 2:
+            cout << totalSize(root) << " bytes" << endl;
+            break;
+
+        case 3:
+        {
+            string term;
+            if (prompt("Name contains: ", term) && !term.empty() && search(root, term, root->name) == 0)
+                cout << "Well, looks like there's no matches, you may have typed it incorrectly. Please try again." << endl;
+            break;
+        }
+        case 4:
+        {
+            string input;
+            if (!prompt("Path: ", input) || input.empty())
+                break;
+            fs::path next = target / input; // Absolute input replaces target.
+            Node *newRoot = loadTree(next);
+            if (newRoot != nullptr)
+            {
+                freeTree(root);
+                root = newRoot;
+                target = fs::canonical(next);
+            }
+            break;
+        }
+        case 5:
+        {
+            Node *newRoot = loadTree(target);
+            if (newRoot != nullptr)
+            {
+                freeTree(root); // Free old tree from memory before replacing.
+                root = newRoot;
+                target = fs::canonical(target);
+            }
+            break;
+        }
+        case 6:
+            break;
+
+        default:
+            cout << "Invalid input for menu. Please choose 1-6.\n";
+            break;
+        }
+    } while (choice != 6);
+
+    freeTree(root);
+    return 0;
 }
