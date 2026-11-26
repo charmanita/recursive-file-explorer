@@ -44,7 +44,7 @@ int getIntegerInput(string prompt)
             return input;
         }
 
-        cout << "Invalid input. Please enter a number.\n";
+        cout << "Invalid input. Please enter a number from 1-9.\n";
 
         cin.clear();
         cin.ignore(10000, '\n');
@@ -61,5 +61,7 @@ void displayMenu()
     cout << "4. Open another folder.\n";
     cout << "5. Refresh\n";
     cout << "6. Add file or folder.\n";
-    cout << "7. Exit\n";
+    cout << "7. Delete file or folder.\n";
+    cout << "8. Help\n";
+    cout << "9. Exit\n";
 }
