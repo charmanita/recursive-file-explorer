@@ -4,5 +4,7 @@
 3. Search by name - This lets you search files or folders by name. 
 4. Open another folder - This lets you open another folder to print, see total size, or search through. 
 5. Refresh - Refreshes folder by scanning for new contents.
-6. Add file or folder - Brings up a prompt asking if you want to make a file or folder. 
-7. Exit - exits program. 
+6. Add file or folder - Brings up a prompt asking if you want to make a file or folder.
+7. Delete file or folder. - Brings up a prompt asking if you want to delete a file or folder. 
+8. Help - Brings up this menu. 
+9. Exit - exits program. 
