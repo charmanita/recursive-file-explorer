@@ -5,6 +5,7 @@
 #include <iostream>
 #include "FileNode.h"
 #include "utilities.h" // Used for CenterText & printBar
+#include "help.h"      // Used for help menu.
 
 using namespace std;
 namespace fs = filesystem; // Using fs as a shortcut for filesystem header.
@@ -148,14 +149,109 @@ int main(int argc, char *argv[])
             break;
         }
         case 7:
+        {
+            string kind;
+            if (!prompt("Delete file or folder? (file/folder): ", kind) || kind.empty())
+                break;
+
+            bool wantFile = (kind == "file");
+            bool wantFolder = (kind == "folder");
+            if (!wantFile && !wantFolder)
+            {
+                cout << "Invalid input. Enter either 'file' for file or 'folder' for folder.\n";
+                break;
+            }
+
+            string name;
+            if (!prompt("Name to delete (relative to current folder): ", name) || name.empty())
+                break;
+
+            error_code ec;
+            fs::path delPath = fs::weakly_canonical(target / name, ec);
+            if (ec || !fs::exists(delPath, ec))
+            {
+                cout << "Item not found: " << (target / name) << endl;
+                break;
+            }
+
+            if (delPath == target)
+            {
+                cout << "Cannot delete the current root folder.\n";
+                break;
+            }
+
+            // Keep deletions inside the active directory.
+            auto targetIt = target.begin();
+            auto delIt = delPath.begin();
+            bool insideTarget = true;
+            for (; targetIt != target.end(); ++targetIt, ++delIt)
+            {
+                if (delIt == delPath.end() || *targetIt != *delIt)
+                {
+                    insideTarget = false;
+                    break;
+                }
+            }
+            if (!insideTarget)
+            {
+                cout << "Refusing to delete outside the current folder.\n";
+                break;
+            }
+
+            bool isDir = fs::is_directory(delPath, ec);
+            if (wantFile && !isDir)
+            {
+                cout << "Not a file: " << delPath << endl;
+                break;
+            }
+
+            if (wantFolder)
+            {
+                string confirm;
+                if (!prompt("Delete folder and all its contents? (Y/N): ", confirm) || (confirm != "y" && confirm != "Y"))
+                {
+                    cout << "Deletion cancelled.\n";
+                    break;
+                }
+
+                auto removed = fs::remove_all(delPath, ec);
+                if (ec)
+                {
+                    cout << "Could not delete folder: " << delPath << endl;
+                    break;
+                }
+                cout << "Deleted folder (" << removed << " items removed): " << delPath << endl;
+            }
+            else
+            {
+                if (!fs::remove(delPath, ec) || ec)
+                {
+                    cout << "Could not delete file: " << delPath << endl;
+                    break;
+                }
+                cout << "Delete file: " << delPath << endl;
+            }
+
+            Node *newRoot = loadTree(target);
+            if (newRoot != nullptr)
+            {
+                freeTree(root);
+                root = newRoot;
+            }
+            break;
+        }
+        case 8:
+            help();
+            break;
+        case 9:
             cout << "Thanks for checking out my program! - Hunter Roberson (Charmanita)\n";
             break;
 
         default:
-            cout << "Invalid input for menu. Please choose 1-7.\n";
+            cout << "Invalid input for menu. Please choose 1-9.\n";
             break;
         }
-    } while (choice != 7);
+    } while (choice != 8);
 
     freeTree(root);
     return 0;
