@@ -23,5 +23,5 @@ int totalSize(const Node *node);
 void printTree(const Node *node, int depth);
 void freeTree(Node *node);
 Node *buildFromPath(const filesystem::path &p);
-
+int search(const Node *node, const string &term, const string &path);
 #endif // FILENODE_H

@@ -93,3 +93,21 @@ void freeTree(Node *node)
     }
     delete node;
 }
+
+// Prints the path of every item whose name contains term.
+// Returns the match count.
+int search(const Node *node, const string &term, const string &path)
+{
+    int matches = 0;
+    for (const Node *c = node->firstChild; c != nullptr; c = c->nextSibling)
+    {
+        string childPath = path + "/" + c->name;
+        if (c->name.find(term) != string::npos)
+        {
+            cout << childPath << (c->isDir ? "/" : "") << endl;
+            matches++;
+        }
+        matches += search(c, term, childPath);
+    }
+    return matches;
+}
