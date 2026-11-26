@@ -1,0 +1,7 @@
+### Help: Recursive File Explorer - Hunter Roberson (charmanita) ###
+1. Print File Tree - Prints the tree of files in the directory the program's currently inside. 
+2. Show total size of folder - Prints the total size of the folder you're in. 
+3. Search by name - This lets you search files or folders by name. 
+4. Open another folder - This lets you open another folder to print, see total size, or search through. 
+5. Refresh - Refreshes folder by scanning for new contents.
+6. Exit - exits program. 
