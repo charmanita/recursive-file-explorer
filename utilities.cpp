@@ -60,5 +60,6 @@ void displayMenu()
     cout << "3. Search by name.\n";
     cout << "4. Open another folder.\n";
     cout << "5. Refresh\n";
-    cout << "6. Exit\n";
+    cout << "6. Add file or folder.\n";
+    cout << "7. Exit\n";
 }

@@ -1,6 +1,7 @@
 // Recursive File Explorer - Main program
 // This is where all of the user interface lives.
 #include <filesystem>
+#include <fstream> // Using fstream to modify files or folders.
 #include <iostream>
 #include "FileNode.h"
 #include "utilities.h" // Used for CenterText & printBar
@@ -97,13 +98,64 @@ int main(int argc, char *argv[])
             break;
         }
         case 6:
+        {
+            string kind;
+            if (!prompt("Create file or folder? (file/folder): ", kind) || kind.empty())
+                break;
+
+            string name;
+            if (!prompt("Name (relative to current folder): ", name) || name.empty())
+                break;
+
+            fs::path newPath = target / name;
+            error_code ec;
+
+            if (kind == "file")
+            {
+                if (!newPath.parent_path().empty())
+                    fs::create_directories(newPath.parent_path(), ec);
+
+                ofstream out(newPath);
+                if (!out)
+                {
+                    cout << "Could not create file: " << newPath << endl;
+                    break;
+                }
+                out.close();
+                cout << "Created file: " << newPath << endl;
+            }
+            else if (kind == "folder")
+            {
+                if (!fs::create_directories(newPath, ec) && ec)
+                {
+                    cout << "Could not create folder: " << newPath << endl;
+                    break;
+                }
+                cout << "Created folder: " << newPath << endl;
+            }
+            else
+            {
+                cout << "Invalid type. Enter 'file' for file or 'folder' for folder.\n";
+                break;
+            }
+
+            Node *newRoot = loadTree(target);
+            if (newRoot != nullptr)
+            {
+                freeTree(root);
+                root = newRoot;
+            }
+            break;
+        }
+        case 7:
+            cout << "Thanks for checking out my program! - Hunter Roberson (Charmanita)\n";
             break;
 
         default:
-            cout << "Invalid input for menu. Please choose 1-6.\n";
+            cout << "Invalid input for menu. Please choose 1-7.\n";
             break;
         }
-    } while (choice != 6);
+    } while (choice != 7);
 
     freeTree(root);
     return 0;
