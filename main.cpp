@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
             cout << "Invalid input for menu. Please choose 1-9.\n";
             break;
         }
-    } while (choice != 8);
+    } while (choice != 9);
 
     freeTree(root);
     return 0;
